@@ -31,12 +31,16 @@ allprojects {
 ## How to use
 ### Normal
 
-```Kotlin
-Http httpGet = new HttpGet("https://httpbin.org/get");
-int responseCode = httpGet.execute();
+``` Kotlin
+val response = ""
+val relatedData = HttpGet("www.naver.com/api")
+val resCode = relatedData.execute()
+if (resCode == 200 || resCode == 201) {
+    response = relatedData.responseBody
+} 
 ```
 
-```JAVA
+``` JAVA
 Http httpGet = new HttpGet("https://httpbin.org/get");
 int responseCode = httpGet.execute();
 ```
