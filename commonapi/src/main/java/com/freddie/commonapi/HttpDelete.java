@@ -1,13 +1,19 @@
 package com.freddie.commonapi;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 public final class HttpDelete extends Http {
 
-    public HttpDelete(String url) throws IOException {
+    public HttpDelete(String url) throws IOException, NoSuchAlgorithmException, KeyManagementException {
         super(url);
-        connection.setRequestMethod(HttpRequestType.DELETE);
+        if (isHttps) {
+            httpSConnection.setRequestMethod(HttpRequestType.DELETE);
+        } else {
+            connection.setRequestMethod(HttpRequestType.DELETE);
+        }
     }
 
     @Override
@@ -54,7 +60,11 @@ public final class HttpDelete extends Http {
         setReadTimeout();
         setFollowRedirects();
 
-        responseCode = connection.getResponseCode();
+        if (isHttps) {
+            responseCode = httpSConnection.getResponseCode();
+        } else {
+            responseCode = connection.getResponseCode();
+        }
 
         retrieveResponseHeaders();
         retrieveRedirectUrl();

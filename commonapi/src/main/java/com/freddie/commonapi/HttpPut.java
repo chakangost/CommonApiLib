@@ -1,13 +1,19 @@
 package com.freddie.commonapi;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 public class HttpPut extends Http {
 
-    public HttpPut(String url) throws IOException {
+    public HttpPut(String url) throws IOException, NoSuchAlgorithmException, KeyManagementException {
         super(url);
-        connection.setRequestMethod(HttpRequestType.PUT);
+        if (isHttps) {
+            httpSConnection.setRequestMethod(HttpRequestType.PUT);
+        } else {
+            connection.setRequestMethod(HttpRequestType.PUT);
+        }
     }
 
     @Override
@@ -56,7 +62,11 @@ public class HttpPut extends Http {
             setFollowRedirects();
             setRequestBody();
 
-            responseCode = connection.getResponseCode();
+            if (isHttps) {
+                responseCode = httpSConnection.getResponseCode();
+            } else {
+                responseCode = connection.getResponseCode();
+            }
 
             retrieveResponseHeaders();
             retrieveRedirectUrl();

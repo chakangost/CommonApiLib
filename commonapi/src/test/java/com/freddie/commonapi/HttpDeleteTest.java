@@ -15,12 +15,12 @@ public class HttpDeleteTest {
     @Before
     public void setUp() throws Exception {
         httpDelete = new HttpDelete("https://www.zaihan.kr/api/posts/acPQwo5xUR");
-        httpDelete.connection.setRequestMethod(HttpRequestType.DELETE);
+        httpDelete.httpSConnection.setRequestMethod(HttpRequestType.DELETE);
     }
 
     @After
     public void tearDown() {
-        httpDelete.connection.disconnect();
+        httpDelete.httpSConnection.disconnect();
     }
 
     @Test
@@ -45,6 +45,24 @@ public class HttpDeleteTest {
         headers.put("Host", "www.zaihan.kr");
         headers.put("User-Agent", "okhttp/3.11.0");
         Assert.assertNotNull(httpDelete.setHeaders(headers));
+    }
+
+    @Test
+    public void getRequestHeader() throws IOException {
+        httpDelete.setHeader("testHeader", "testValue");
+        if (200 == httpDelete.execute()) {
+            Assert.assertEquals("testValue", httpDelete.parameter.getRequestHeader("testHeader"));
+        }
+    }
+
+    @Test
+    public void getRequestHeaders() throws IOException {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("testHeader", "testValue");
+        httpDelete.setHeaders(headers);
+        if (200 == httpDelete.execute()) {
+            Assert.assertEquals("testValue", httpDelete.parameter.getRequestHeader("testHeader"));
+        }
     }
 
     @Test

@@ -1,13 +1,19 @@
 package com.freddie.commonapi;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 public final class HttpGet extends Http {
 
-    public HttpGet(String url) throws IOException {
+    public HttpGet(String url) throws IOException, NoSuchAlgorithmException, KeyManagementException {
         super(url);
-        connection.setRequestMethod(HttpRequestType.GET);
+        if (isHttps) {
+            httpSConnection.setRequestMethod(HttpRequestType.GET);
+        } else {
+            connection.setRequestMethod(HttpRequestType.GET);
+        }
     }
 
     @Override
@@ -54,7 +60,11 @@ public final class HttpGet extends Http {
         setReadTimeout();
         setFollowRedirects();
 
-        responseCode = connection.getResponseCode();
+        if (isHttps) {
+            responseCode = httpSConnection.getResponseCode();
+        } else {
+            responseCode = connection.getResponseCode();
+        }
 
         retrieveResponseHeaders();
         retrieveRedirectUrl();

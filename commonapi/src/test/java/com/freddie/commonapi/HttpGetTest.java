@@ -15,13 +15,13 @@ public class HttpGetTest {
     @Before
     public void setUp() throws Exception {
         httpGet = new HttpGet("https://en.wikipedia.org/api/rest_v1/page/summary/Titanic");
-        httpGet.connection.setRequestMethod(HttpRequestType.GET);
+        httpGet.httpSConnection.setRequestMethod(HttpRequestType.GET);
         httpGet.setFollowRedirects(true);
     }
 
     @After
     public void tearDown() {
-        httpGet.connection.disconnect();
+        httpGet.httpSConnection.disconnect();
     }
 
     @Test
@@ -40,6 +40,24 @@ public class HttpGetTest {
         headers.put("testHeader1", "testValue1");
         headers.put("testHeader2", "testValue2");
         Assert.assertNotNull(httpGet.setHeaders(headers));
+    }
+
+    @Test
+    public void getRequestHeader() throws IOException {
+        httpGet.setHeader("testHeader", "testValue");
+        if (200 == httpGet.execute()) {
+            Assert.assertEquals("testValue", httpGet.parameter.getRequestHeader("testHeader"));
+        }
+    }
+
+    @Test
+    public void getRequestHeaders() throws IOException {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("testHeader", "testValue");
+        httpGet.setHeaders(headers);
+        if (200 == httpGet.execute()) {
+            Assert.assertEquals("testValue", httpGet.parameter.getRequestHeader("testHeader"));
+        }
     }
 
     @Test
@@ -71,5 +89,12 @@ public class HttpGetTest {
     @Test
     public void execute() throws IOException {
         Assert.assertEquals(200, httpGet.execute());
+    }
+
+    @Test
+    public void getResponseBody() throws IOException {
+        if (200 == httpGet.execute()) {
+            Assert.assertNotNull(httpGet.getResponseBody());
+        }
     }
 }

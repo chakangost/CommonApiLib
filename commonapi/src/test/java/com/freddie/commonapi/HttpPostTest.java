@@ -15,13 +15,13 @@ public class HttpPostTest {
     @Before
     public void setUp() throws Exception {
         httpPost = new HttpPost("https://www.zaihan.kr/api/user/signup");
-        httpPost.connection.setRequestMethod(HttpRequestType.POST);
+        httpPost.httpSConnection.setRequestMethod(HttpRequestType.POST);
         httpPost.setFollowRedirects(true);
     }
 
     @After
     public void tearDown() {
-        httpPost.connection.disconnect();
+        httpPost.httpSConnection.disconnect();
     }
 
     @Test
@@ -40,6 +40,24 @@ public class HttpPostTest {
         headers.put("testHeader1", "testValue1");
         headers.put("testHeader2", "testValue2");
         Assert.assertNotNull(httpPost.setHeaders(headers));
+    }
+
+    @Test
+    public void getRequestHeader() throws IOException {
+        httpPost.setHeader("testHeader", "testValue");
+        if (200 == httpPost.execute()) {
+            Assert.assertEquals("testValue", httpPost.parameter.getRequestHeader("testHeader"));
+        }
+    }
+
+    @Test
+    public void getRequestHeaders() throws IOException {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("testHeader", "testValue");
+        httpPost.setHeaders(headers);
+        if (200 == httpPost.execute()) {
+            Assert.assertEquals("testValue", httpPost.parameter.getRequestHeader("testHeader"));
+        }
     }
 
     @Test

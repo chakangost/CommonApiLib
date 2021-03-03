@@ -16,13 +16,13 @@ public class HttpPutTest {
     @Before
     public void setUp() throws Exception {
         httpPut = new HttpPut("https://www.zaihan.kr/api/users/me");
-        httpPut.connection.setRequestMethod(HttpRequestType.PUT);
+        httpPut.httpSConnection.setRequestMethod(HttpRequestType.PUT);
         httpPut.setFollowRedirects(true);
     }
 
     @After
     public void tearDown() {
-        httpPut.connection.disconnect();
+        httpPut.httpSConnection.disconnect();
     }
 
     @Test
@@ -47,6 +47,24 @@ public class HttpPutTest {
         headers.put("Host", "www.zaihan.kr");
         headers.put("User-Agent", "okhttp/3.11.0");
         Assert.assertNotNull(httpPut.setHeaders(headers));
+    }
+
+    @Test
+    public void getRequestHeader() throws IOException {
+        httpPut.setHeader("testHeader", "testValue");
+        if (200 == httpPut.execute()) {
+            Assert.assertEquals("testValue", httpPut.parameter.getRequestHeader("testHeader"));
+        }
+    }
+
+    @Test
+    public void getRequestHeaders() throws IOException {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("testHeader", "testValue");
+        httpPut.setHeaders(headers);
+        if (200 == httpPut.execute()) {
+            Assert.assertEquals("testValue", httpPut.parameter.getRequestHeader("testHeader"));
+        }
     }
 
     @Test
@@ -80,15 +98,5 @@ public class HttpPutTest {
             e.printStackTrace();
             Assert.assertEquals(401, responseCode);
         }
-    }
-
-    @Test
-    public void getResponseHeader() {
-        httpPut.getResponseHeaders();
-    }
-
-    @Test
-    public void getResponseBody() throws IOException {
-        String responseBody = httpPut.getResponseBody();
     }
 }
