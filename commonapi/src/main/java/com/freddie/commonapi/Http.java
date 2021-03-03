@@ -23,7 +23,7 @@ public abstract class Http {
     protected HttpsURLConnection httpSConnection;
     protected boolean isHttps;
     protected final HttpParameter parameter = new HttpParameter();
-    private final HttpResponse response = new HttpResponse();
+    private final HttpResponse httpResponse = new HttpResponse();
 
     protected Http(String url) throws IOException, KeyManagementException, NoSuchAlgorithmException {
         URL requestUrl = new URL(url);
@@ -121,12 +121,12 @@ public abstract class Http {
             headers = connection.getHeaderFields();
         }
         if (headers != null) {
-            response.getHeaders().putAll(headers);
+            httpResponse.getHeaders().putAll(headers);
         }
     }
 
     public Map<String, List<String>> getResponseHeaders() {
-        return response.getHeaders();
+        return httpResponse.getHeaders();
     }
 
     protected void retrieveRedirectUrl() {
@@ -137,19 +137,19 @@ public abstract class Http {
             locationHeader = connection.getHeaderFields().get("Location");
         }
         if (locationHeader != null) {
-            response.setRedirectUrl(locationHeader.get(0));
+            httpResponse.setRedirectUrl(locationHeader.get(0));
         }
     }
 
     public String getRedirectUrl() {
-        return response.getRedirectUrl();
+        return httpResponse.getRedirectUrl();
     }
 
     public String getResponseBody() throws IOException {
+        StringBuilder response = new StringBuilder();
         if (isHttps) {
             BufferedReader in = new BufferedReader(new InputStreamReader(httpSConnection.getInputStream()));
             String inputLine;
-            StringBuilder response = new StringBuilder();
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
@@ -158,7 +158,6 @@ public abstract class Http {
         } else {
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String inputLine;
-            StringBuilder response = new StringBuilder();
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
