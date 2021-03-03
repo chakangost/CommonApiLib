@@ -52,5 +52,5 @@ If you think this library is useful, please press the star button at the top.
 
 ## License 
  ```code
-Copyright 2020 Freddie
+Copyright 2021 Freddie
 ```
